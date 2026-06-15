@@ -1,13 +1,15 @@
 import { useEffect, useState } from 'react'
 import { api, checkHealth } from '../../api/api.ts'
 import AuthInput from '../components/AuthInput.tsx'
+import AuthBtn from '../components/AuthBttn.tsx'
 
 
 function Register() {
-  const [username, setUsername] = useState("")
-  const [password, setPassword] = useState("")
-  const [role, setRole] = useState<number>(0)
+  const [username, setUsername] = useState("");
+  const [password, setPassword] = useState("");
+  const [role, setRole] = useState<number>(0);
 
+  const [submitting, setSubmitting] = useState(false);
 
   async function registerAccount() {
     console.log(username)
@@ -39,10 +41,6 @@ async function CheckHealth(): Promise<string> {
         </div>
         <div className='flex-1 flex items-center justify-center -translate-y-20'>
           <div className='w-full max-w-md flex flex-col gap-2'>
-            {/* <input 
-                className='w-full rounded-lg bg-slate-800 border border-slate-700 px-4 py-3'
-                placeholder='Username'
-            /> */}
             <AuthInput 
               placeholder="Username"
               value={username}
@@ -64,9 +62,7 @@ async function CheckHealth(): Promise<string> {
               <option value={0}>Select a role</option>
               <option value={1}>ADMIN</option>
             </select>
-            <button className='w-full rounded-lg bg-blue-600 px-4 py-3 font-semibold hover:bg-blue-500' onClick={registerAccount}>
-              Register
-            </button>
+            <AuthBtn name='Register' onClick={registerAccount} disabled={submitting}/>
           </div>
         </div>
     </div>
