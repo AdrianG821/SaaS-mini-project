@@ -6,11 +6,14 @@ import AuthInput from '../components/AuthInput.tsx'
 function Register() {
   const [username, setUsername] = useState("")
   const [password, setPassword] = useState("")
-  const [role, setRole] = useState("")
+  const [role, setRole] = useState<number>(0)
 
-  
+
   async function registerAccount() {
     console.log(username)
+    console.log(password)
+    console.log(role)
+
   }
 
 useEffect(() => {
@@ -45,17 +48,21 @@ async function CheckHealth(): Promise<string> {
               value={username}
               onChange={e => setUsername(e.target.value)}
             />
-            <input 
-                className='w-full rounded-lg bg-slate-800 border border-slate-700 px-4 py-3'
-                type='password'
-                placeholder='Password'
+            <AuthInput 
+              placeholder="Password"
+              value={password}
+              type='password'
+              onChange={e => setPassword(e.target.value)}
             />
             <select
              name='Role'
              id='roles'
              className='w-full rounded-lg bg-slate-800 border border-slate-700 px-4 py-3'
+             value={role}
+             onChange={e => setRole(parseInt(e.target.value))}
              > 
-              <option value="1">ADMIN</option>
+              <option value={0}>Select a role</option>
+              <option value={1}>ADMIN</option>
             </select>
             <button className='w-full rounded-lg bg-blue-600 px-4 py-3 font-semibold hover:bg-blue-500' onClick={registerAccount}>
               Register
