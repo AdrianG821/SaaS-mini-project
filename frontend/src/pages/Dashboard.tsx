@@ -12,12 +12,25 @@ type SubscriptionType = {
   status: string,
 };
 
+type StatusType = {
+  id: number,
+  name: string,
+}
+
+type UsageType ={
+  id: number,
+  name: string
+}
+
 
 function Dashboard() {
   const [backendMessage, setBackendMessage] = useState("");
-  const [subscriptions, setSubscriptions] = useState<SubscriptionType[]>([]);
-  const [subName,setSubName] = useState("")
+  const [subName,setSubName] = useState("");
 
+
+  const [subscriptions, setSubscriptions] = useState<SubscriptionType[]>([]);
+  const [statuses, setStatuses] = useState<StatusType[]>([]);
+  const [usage,setUsage] = useState<UsageType[]>([]);
 
   useEffect(() => {
     // CheckHealth()
@@ -36,12 +49,30 @@ function Dashboard() {
       usage: 25,
       status: "IN USE"
     }];
+
+    const statusTemp = [{
+      id: 0,
+      name: "Select a status"
+    },{
+      id: 1,
+      name: "IN USE"
+    },{
+      id:2,
+      name: "RENEWAL SOON"
+    }]
+
+    const usageTemp = [{id: 0, name: "0"},{id: 1, name: "10"},{id: 2, name: "20"},{id: 3, name: "30"},{id: 4, name: "40"},{id: 5, name: "50"},{id: 6, name: "60"},{id: 7, name: "70"},{id: 8, name: "80"},{id: 9, name: "90"},{id: 10, name: "100"},]
+
+    setUsage(usageTemp)
+    setStatuses(statusTemp);
     setSubscriptions(temp);
-    
+
   }, [])
 
   useEffect(() => {
     console.log(subscriptions);
+    console.log(statuses)
+    console.log(usage)
   }, [subscriptions])
 
 
@@ -62,7 +93,8 @@ function Dashboard() {
         <div className='flex items-center justify-center'>
           <div className='w-full justify-center flex gap-2'>
               <DashInput placeholder='Subscriptions name' value={subName} onChange={e => setSubName(e.target.value)} />
-              <DashSelect />
+              <DashSelect data={statuses}/>
+              <DashSelect data={usage} />
               <input />
               <input />
               <button>Search</button>
