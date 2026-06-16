@@ -2,6 +2,8 @@ import { useEffect, useState } from 'react'
 import { api, checkHealth } from '../../api/api.ts'
 import DashInput from '../components/DashInput.tsx';
 import DashSelect from '../components/DashSelect.tsx';
+import DashCheckBox from '../components/DashCheckBox.tsx';
+import DashBtn from '../components/DashBtn.tsx';
 
 type SubscriptionType = {
   id: number,
@@ -31,6 +33,7 @@ function Dashboard() {
   const [subscriptions, setSubscriptions] = useState<SubscriptionType[]>([]);
   const [statuses, setStatuses] = useState<StatusType[]>([]);
   const [usage,setUsage] = useState<UsageType[]>([]);
+  const [belowCheckBox,setBelowCheckBox] = useState<boolean>(false);
 
   useEffect(() => {
     // CheckHealth()
@@ -82,6 +85,10 @@ function Dashboard() {
     return data.message;
   }
 
+  function click() {
+    console.log(belowCheckBox)
+  }
+
 
   return (
     <div className='min-h-screen w-full flex flex-col bg-gray-600 text-white'>
@@ -95,13 +102,16 @@ function Dashboard() {
               <DashInput placeholder='Subscriptions name' value={subName} onChange={e => setSubName(e.target.value)} />
               <DashSelect data={statuses}/>
               <DashSelect data={usage} />
-              <input />
-              <input />
-              <button>Search</button>
-
+              <DashCheckBox label={"Below"} value={belowCheckBox} onChange={e => setBelowCheckBox(Boolean(e.target.checked))}/>
+              <DashBtn name={"Search"} width={'w-32'} onClick={click}/>
           </div>
         </div>
 
+        <div className=''>
+          <div className='float-end mr-5'> 
+            <DashBtn name={"Add new subscriptions"} width={'w-56'} onClick={click}/>
+          </div>
+        </div>
 
         <div className='flex-1 flex justify-center pt-4'>
           <div className='w-full  flex flex-col p-2 '>
@@ -120,6 +130,7 @@ function Dashboard() {
                     <th>Waste</th>
                     <th>Status</th>
                     <th></th>
+                    <th></th>
 
                   </tr>
                 </thead>
@@ -132,8 +143,13 @@ function Dashboard() {
                       <td>{w.usage}%</td>
                       <td>${(w.price * w.noLincense * (100 - w.usage))/100}</td>
                       <td>{w.status}</td>
-                      <td><button className='bg-red-500'>sass</button>
-                      <button className='bg-red-500'>sass</button></td>
+                      <td>
+                        <DashBtn name={"View details"} width={'w-24'} onClick={click} position=''/>
+                        
+                      </td>
+                      <td>
+                        <DashBtn name={"Cancel"} width={'w-24'} onClick={click} position=''/>
+                      </td>
                     </tr>
                   ))}
                 </tbody>
