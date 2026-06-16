@@ -1,5 +1,7 @@
 import { useEffect, useState } from 'react'
 import { api, checkHealth } from '../../api/api.ts'
+import DashInput from '../components/DashInput.tsx';
+import DashSelect from '../components/DashSelect.tsx';
 
 type SubscriptionType = {
   id: number,
@@ -14,7 +16,7 @@ type SubscriptionType = {
 function Dashboard() {
   const [backendMessage, setBackendMessage] = useState("");
   const [subscriptions, setSubscriptions] = useState<SubscriptionType[]>([]);
-
+  const [subName,setSubName] = useState("")
 
 
   useEffect(() => {
@@ -25,6 +27,13 @@ function Dashboard() {
       price: 15,
       noLincense: 12,
       usage: 60,
+      status: "IN USE"
+    },{
+      id: 2,
+      name: "Claude",
+      price: 150,
+      noLincense: 15,
+      usage: 25,
       status: "IN USE"
     }];
     setSubscriptions(temp);
@@ -52,8 +61,8 @@ function Dashboard() {
 
         <div className='flex items-center justify-center'>
           <div className='w-full justify-center flex gap-2'>
-              <input />
-              <input />
+              <DashInput placeholder='Subscriptions name' value={subName} onChange={e => setSubName(e.target.value)} />
+              <DashSelect />
               <input />
               <input />
               <button>Search</button>
@@ -62,14 +71,14 @@ function Dashboard() {
         </div>
 
 
-        <div className='flex-1 flex items-center justify-center'>
+        <div className='flex-1 flex justify-center pt-4'>
           <div className='w-full  flex flex-col p-2 '>
               {/* {
                 subscriptions.map(w => (
                   <div>{w.name}</div>
                 ))
               } */}
-              <table className='w-full'>
+              <table className='w-full '>
                 <thead>
                   <tr className='text-left border-b border-slate-800 bg-slate-950/80 '>
                     <th>Name</th>
