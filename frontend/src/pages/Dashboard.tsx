@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react'
 import { api, checkHealth } from '../../api/api.ts'
 import DashInput from '../components/DashInput.tsx';
 import DashSelect from '../components/DashSelect.tsx';
+import DashCheckBox from '../components/DashCheckBox.tsx';
 
 type SubscriptionType = {
   id: number,
@@ -31,6 +32,7 @@ function Dashboard() {
   const [subscriptions, setSubscriptions] = useState<SubscriptionType[]>([]);
   const [statuses, setStatuses] = useState<StatusType[]>([]);
   const [usage,setUsage] = useState<UsageType[]>([]);
+  const [belowCheckBox,setBelowCheckBox] = useState<boolean>(false);
 
   useEffect(() => {
     // CheckHealth()
@@ -82,6 +84,10 @@ function Dashboard() {
     return data.message;
   }
 
+  function click() {
+    console.log(belowCheckBox)
+  }
+
 
   return (
     <div className='min-h-screen w-full flex flex-col bg-gray-600 text-white'>
@@ -95,9 +101,8 @@ function Dashboard() {
               <DashInput placeholder='Subscriptions name' value={subName} onChange={e => setSubName(e.target.value)} />
               <DashSelect data={statuses}/>
               <DashSelect data={usage} />
-              <input />
-              <input />
-              <button>Search</button>
+              <DashCheckBox label={"Below"} value={belowCheckBox} onChange={e => setBelowCheckBox(Boolean(e.target.checked))}/>
+              <button onClick={click}>Search</button>
 
           </div>
         </div>
