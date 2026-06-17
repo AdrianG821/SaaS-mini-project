@@ -5,6 +5,7 @@ import DashSelect from '../components/DashSelect.tsx';
 import DashCheckBox from '../components/DashCheckBox.tsx';
 import DashBtn from '../components/DashBtn.tsx';
 import DashPopup, { type InputType } from '../components/DashPopup.tsx';
+import { useNavigate } from 'react-router-dom';
 
 type SubscriptionType = {
   id: number,
@@ -28,6 +29,8 @@ type UsageType ={
 
 function Dashboard() {
   const [backendMessage, setBackendMessage] = useState("");
+
+  const navigate = useNavigate();
 
   const [popUp,setPopUp] = useState<boolean>(true);
 
@@ -119,9 +122,9 @@ function Dashboard() {
   }, [])
 
   useEffect(() => {
-    console.log(subscriptions);
-    console.log(statuses)
-    console.log(usage)
+    // console.log(subscriptions);
+    // console.log(statuses)
+    // console.log(usage)
   }, [subscriptions])
 
 
@@ -132,17 +135,35 @@ function Dashboard() {
   }
 
   function click() {
-    console.log(belowCheckBox)
+    // console.log(belowCheckBox)
   }
 
-  function AddNewSub() {
+  function OpenAddSubPopup() {
     setPopUp(true)
+  }
+
+  async function AddNewPopup() {
+    console.log(newSubName);
+    console.log(newLicensePrice);
+    console.log(newUsage);
+    console.log(newNoLicense);
+  }
+
+  async function CancelSubscription() {
+    if(!confirm("Are you sure you want to cancel this subscription?")) {
+      return;
+    } 
+    try {
+
+    } catch(e: any){
+      if (e?.response?.status === 404) return alert("Subscription not found");
+    }
   }
 
 
   return (
     <div className='min-h-screen w-full flex flex-col bg-gray-600 text-white'>
-      <DashPopup toggle={popUp} onClick={e => setPopUp(false)} input1={input1} input2={input2} input3={input3} input4={input4} />
+      <DashPopup toggle={popUp} onClick={e => setPopUp(false)} input1={input1} input2={input2} input3={input3} input4={input4} btnOnClick={AddNewPopup}/>
         <div className='p-6 text-2xl font-semibold flex justify-center'>
           <h1>Check subscriptions</h1>
         </div>
@@ -160,7 +181,7 @@ function Dashboard() {
 
         <div className=''>
           <div className='float-end mr-5'> 
-            <DashBtn name={"Add new subscriptions"} width={'w-56'} onClick={AddNewSub}/>
+            <DashBtn name={"Add new subscriptions"} width={'w-56'} onClick={OpenAddSubPopup}/>
           </div>
         </div>
 
@@ -190,11 +211,11 @@ function Dashboard() {
                       <td>${(w.price * w.noLincense * (100 - w.usage))/100}</td>
                       <td>{w.status}</td>
                       <td className='w-32'> 
-                        <DashBtn name={"View details"} width={'w-24'} onClick={click} position=''/>
+                        <DashBtn name={"View details"} width={'w-24'} onClick={OpenAddSubPopup} position=''/>
                         
                       </td>
                       <td className='w-32'>
-                        <DashBtn name={"Cancel"} width={'w-24'} onClick={click} position=''/>
+                        <DashBtn name={"Cancel"} width={'w-24'} onClick={CancelSubscription} position=''/>
                       </td>
                     </tr>
                   ))}
