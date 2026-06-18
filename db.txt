@@ -1,0 +1,45 @@
+CREATE TABLE roles (
+  id INT AUTO_INCREMENT PRIMARY KEY,
+  name VARCHAR(100) NOT NULL,
+  createdAt DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP
+);
+create table users(
+	id int auto_increment primary key,
+    username varchar(100) not null,
+    password varchar(500) not null,
+    roleId int not null,
+    createdAt datetime not null default current_timestamp,
+    
+    FOREIGN KEY (roleId) REFERENCES roles(id)
+);
+create table departments(
+	id int auto_increment primary key,
+    name varchar(250),
+    createdAt datetime default current_timestamp
+);
+
+create table categories(
+	id int auto_increment primary key,
+    name varchar(250),
+    createdAt datetime default current_timestamp
+);
+
+
+create table subscriptions (
+	id int auto_increment primary key,
+    name varchar(250) not null,
+    categoryId int not null,
+    licensePrice decimal(10,2) not null,
+    numberOfLicenses int not null,
+    departmentId int not null,
+    usagePercent int not null,
+    description varchar(500),
+    userId int,
+    updatedAt datetime not null default current_timestamp on update current_timestamp,
+    createdAt datetime not null default current_timestamp,
+    
+    foreign key (categoryId) references categories(id),
+	foreign key (departmentId) references departments(id),
+    foreign key (userId) references users(id)
+
+    );
