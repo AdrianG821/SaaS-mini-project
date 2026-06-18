@@ -125,6 +125,7 @@ function Dashboard() {
     // console.log(subscriptions);
     // console.log(statuses)
     // console.log(usage)
+    CheckHealth()
   }, [subscriptions])
 
 

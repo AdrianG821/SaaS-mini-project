@@ -1,12 +1,14 @@
 import { Injectable } from '@nestjs/common';
+import { stringify } from 'querystring';
 
 @Injectable()
 export class HealthService {
 
-  checkConnection() {
+
+  async checkConnection() {
     return  {
         status: "ok",
-        message: "Connection is workin!"
+        message: "Connection is workin"
     } ; 
   }
 
