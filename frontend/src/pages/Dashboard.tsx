@@ -10,9 +10,9 @@ import { useNavigate } from 'react-router-dom';
 type SubscriptionType = {
   id: number,
   name: string,
-  price: number,
-  noLincense: number,
-  usage: number,
+  licensePrice: number,
+  numberoflicenses: number,
+  usagePercent: number,
   status: string,
 };
 
@@ -86,21 +86,23 @@ function Dashboard() {
 
   useEffect(() => {
     // CheckHealth()
-    const temp = [{
-      id: 1,
-      name: "ChatGPT",
-      price: 15,
-      noLincense: 12,
-      usage: 60,
-      status: "IN USE"
-    },{
-      id: 2,
-      name: "Claude",
-      price: 150,
-      noLincense: 15,
-      usage: 25,
-      status: "IN USE"
-    }];
+    FetchSubscriptions()
+
+    // const temp = [{
+    //   id: 1,
+    //   name: "ChatGPT",
+    //   price: 15,
+    //   noLincense: 12,
+    //   usage: 60,
+    //   status: "IN USE"
+    // },{
+    //   id: 2,
+    //   name: "Claude",
+    //   price: 150,
+    //   noLincense: 15,
+    //   usage: 25,
+    //   status: "IN USE"
+    // }];
 
     const statusTemp = [{
       id: 0,
@@ -117,30 +119,47 @@ function Dashboard() {
 
     setUsage(usageTemp)
     setStatuses(statusTemp);
-    setSubscriptions(temp);
+    // setSubscriptions(temp);
 
   }, [])
 
-  useEffect(() => {
-    // console.log(subscriptions);
-    // console.log(statuses)
-    // console.log(usage)
-    CheckHealth()
-  }, [subscriptions])
+  // useEffect(() => {
+  //   // console.log(subscriptions);
+  //   // console.log(statuses)
+  //   // console.log(usage)
+  //   CheckHealth()
+  // }, [subscriptions])
 
 
-  async function CheckHealth(): Promise<string> {
-    const data = await checkHealth();
-    setBackendMessage(data.message)
-    return data.message;
-  }
+  // async function CheckHealth(): Promise<string> {
+  //   const data = await checkHealth();
+  //   setBackendMessage(data.message)
+  //   return data.message;
+  // }
 
   function click() {
     // console.log(belowCheckBox)
   }
 
+  async function FetchSubscriptions(){
+    try{
+      const { data } = await api.get('/dashboard/fetch_subscriptions', { params: { name: "Chat GPT", statusId: 2, procent: 50, below: false } });
+
+      setSubscriptions(data)
+
+      console.log(data);
+
+    }catch(e: any) {
+      if(e?.message?.status === 401) return alert("Bad request!")
+    }
+  }
+
   function OpenAddSubPopup() {
     setPopUp(true)
+  }
+
+  async function SubscriptionPopup () {
+
   }
 
   async function AddNewPopup() {
@@ -206,10 +225,10 @@ function Dashboard() {
                   {subscriptions.map(w => (
                     <tr key= {w.id} className='hover:bg-slate-900/40 transition cursor-pointer '>
                       <td>{w.name}</td>
-                      <td className='w-64'>${w.price * w.noLincense}</td>
-                      <td>{w.noLincense}</td>
-                      <td>{w.usage}%</td>
-                      <td>${(w.price * w.noLincense * (100 - w.usage))/100}</td>
+                      <td className='w-64'>${w.licensePrice * w.numberoflicenses}</td>
+                      <td>{w.numberoflicenses}</td>
+                      <td>{w.usagePercent}%</td>
+                      <td>${(w.licensePrice * w.numberoflicenses * (100 - w.usagePercent))/100}</td>
                       <td>{w.status}</td>
                       <td className='w-32'> 
                         <DashBtn name={"View details"} width={'w-24'} onClick={OpenAddSubPopup} position=''/>
