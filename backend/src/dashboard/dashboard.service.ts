@@ -88,4 +88,14 @@ export class DashboardService {
     return rows
   }
 
+  async getSubscription(id: number) {
+
+    const sql = `select name, licensePrice , dueDate, numberOfLicenses, categoryId , departmentId , description, usagePercent from subscriptions where id = ${id}`
+
+    const rows = await this.database.query(sql)
+    console.log(rows);
+
+    return rows;
+  }
+
 }

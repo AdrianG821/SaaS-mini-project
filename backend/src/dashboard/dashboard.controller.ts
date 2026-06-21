@@ -1,4 +1,4 @@
-import { Controller, Get, Query } from '@nestjs/common';
+import { Controller, Get, Param, Query } from '@nestjs/common';
 import { DashboardService } from './dashboard.service';
 
 type SubscriptionsType = {
@@ -39,6 +39,17 @@ export class DashBoardController {
     const data = this.dashboard.getDepartments();
 
     // console.log(query);
+
+    return  data;
+  }
+
+
+  @Get('get_subscription/:id')
+  getSubscription(@Param('id') id: number){
+
+    const data = this.dashboard.getSubscription(id);
+
+    console.log(id);
 
     return  data;
   }

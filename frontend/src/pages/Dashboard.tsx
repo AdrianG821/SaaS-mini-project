@@ -26,6 +26,17 @@ type UsageType ={
   name: string
 }
 
+type Subscription = {
+  name: string,
+  licensePrice: string,
+  dueDate: string,
+  numberOfLicenses: string,
+  categoryId: string,
+  departmentId: string,
+  description: string,
+  usagePercent: string
+}
+
 
 function Dashboard() {
   const [backendMessage, setBackendMessage] = useState("");
@@ -144,6 +155,7 @@ function Dashboard() {
 
   async function SubscriptionPopup (id: number) {
 
+    setPopupMode("update")
     setExistingId(id)
      
     setNewSubName("")
@@ -158,10 +170,17 @@ function Dashboard() {
     OpenAddSubPopup()
 
 
-    console.log(id)
-
     try {
+      const { data } = await api.get<Subscription>(`/dashboard/get_subscription/${id}`)
 
+      setNewSubName(data.name);
+      setNewLicensePrice(data.licensePrice)
+      setNewUsage(data.usagePercent)
+      setNewNoLicense(data.numberOfLicenses)
+      setNewSubRenewalDate(data.dueDate)
+      setNewDescription(data.description)
+      setNewCategory(data.categoryId)
+      setNewDepartment(data.departmentId)
 
     } catch(e: any) {
       if(e?.message?.status === 404) return alert("Subscription not found")
