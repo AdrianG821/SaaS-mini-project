@@ -8,6 +8,7 @@ type SubscriptionsType = {
   below: string,
 }
 
+
 @Controller('dashboard')
 export class DashBoardController {
   constructor(private readonly dashboard: DashboardService) {}
@@ -16,6 +17,26 @@ export class DashBoardController {
   getConnection(@Query() query: SubscriptionsType){
 
     const data = this.dashboard.FetchSubscriptions(query);
+
+    // console.log(query);
+
+    return  data;
+  }
+
+  @Get('get_categories')
+  getCategories(){
+
+    const data = this.dashboard.getCategories();
+
+    // console.log(query);
+
+    return  data;
+  }
+
+  @Get('get_departments')
+  getDepartments(){
+
+    const data = this.dashboard.getDepartments();
 
     // console.log(query);
 

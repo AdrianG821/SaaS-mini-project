@@ -4,7 +4,7 @@ import DashInput from '../components/DashInput.tsx';
 import DashSelect from '../components/DashSelect.tsx';
 import DashCheckBox from '../components/DashCheckBox.tsx';
 import DashBtn from '../components/DashBtn.tsx';
-import DashPopup, { type InputType } from '../components/DashPopup.tsx';
+import DashPopup, { type InputTextarea, type InputType, type OptionType, type SelectInput } from '../components/DashPopup.tsx';
 import { useNavigate } from 'react-router-dom';
 
 type SubscriptionType = {
@@ -41,12 +41,21 @@ function Dashboard() {
   const [belowCheckBox,setBelowCheckBox] = useState<boolean>(false);
 
 
+  const [existingId,setExistingId] = useState(0);
+  const [popupMode, setPopupMode] = useState("");
+
+
   const [newSubName,setNewSubName] = useState("");
   const [newLicensePrice,setNewLicensePrice] = useState("");
   const [newNoLicense,setNewNoLicense] = useState("");
   const [newUsage,setNewUsage] = useState("");
-  // const [newSubName,setNewSubName] = useState("");
-  // const [newSubName,setNewSubName] = useState("");
+  const [newSubRenewalDate,setNewSubRenewalDate] = useState("");
+  const [newDescription,setNewDescription] = useState("");
+  const [newCategory,setNewCategory] = useState("");
+  const [newDepartment, setNewDepartment] = useState("");
+
+  const [categories, setCategories] = useState<OptionType[]>([])
+  const [departments, setDepartments] = useState<OptionType[]>([])
 
 
   const input1: InputType = {
@@ -77,32 +86,33 @@ function Dashboard() {
     onChange: e => setNewUsage(e.target.value)
   }
 
-  // const input5: InputType = {
-  //   placeholder: "New subscription",
-  //   value: newSubName,
-  //   type: "text",
-  //   onChange: e => setNewSubName(e.target.value)
-  // }
+  const input5: InputType = {
+    placeholder: "",
+    value: newSubRenewalDate,
+    type: "text",
+    onChange: e => setNewSubRenewalDate(e.target.value)
+  }
+
+  const input6: InputTextarea = {
+    placeholder: "Description",
+    value: newDescription,
+    onChange: e => setNewDescription(e.target.value)
+  }
+
+  const selectCategory: SelectInput = {
+    value: newCategory,
+    onChange: e => setNewCategory(e.target.value)
+  }
+
+  const selectDepartment: SelectInput = {
+    value: newDepartment,
+    onChange: e => setNewDepartment(e.target.value)
+  }
 
   useEffect(() => {
-    // CheckHealth()
     FetchSubscriptions()
-
-    // const temp = [{
-    //   id: 1,
-    //   name: "ChatGPT",
-    //   price: 15,
-    //   noLincense: 12,
-    //   usage: 60,
-    //   status: "IN USE"
-    // },{
-    //   id: 2,
-    //   name: "Claude",
-    //   price: 150,
-    //   noLincense: 15,
-    //   usage: 25,
-    //   status: "IN USE"
-    // }];
+    FetchDepartments() 
+    FetchCatergories()
 
     const statusTemp = [{
       id: 0,
@@ -123,42 +133,42 @@ function Dashboard() {
 
   }, [])
 
-  // useEffect(() => {
-  //   // console.log(subscriptions);
-  //   // console.log(statuses)
-  //   // console.log(usage)
-  //   CheckHealth()
-  // }, [subscriptions])
-
-
-  // async function CheckHealth(): Promise<string> {
-  //   const data = await checkHealth();
-  //   setBackendMessage(data.message)
-  //   return data.message;
-  // }
-
   function click() {
     // console.log(belowCheckBox)
   }
 
-  async function FetchSubscriptions(){
-    try{
-      const { data } = await api.get('/dashboard/fetch_subscriptions', { params: { name: "Chat GPT", statusId: 2, procent: 50, below: false } });
-
-      setSubscriptions(data)
-
-      console.log(data);
-
-    }catch(e: any) {
-      if(e?.message?.status === 401) return alert("Bad request!")
-    }
-  }
 
   function OpenAddSubPopup() {
     setPopUp(true)
   }
 
-  async function SubscriptionPopup () {
+  async function SubscriptionPopup (id: number) {
+
+    setExistingId(id)
+     
+    setNewSubName("")
+    setNewLicensePrice("")
+    setNewUsage("")
+    setNewNoLicense("")
+    setNewSubRenewalDate("")
+    setNewDescription("")
+    setNewCategory("")
+    setNewDepartment("")
+
+    OpenAddSubPopup()
+
+
+    console.log(id)
+
+    try {
+
+
+    } catch(e: any) {
+      if(e?.message?.status === 404) return alert("Subscription not found")
+    }finally{
+      setExistingId(0)
+    }
+    
 
   }
 
@@ -167,6 +177,11 @@ function Dashboard() {
     console.log(newLicensePrice);
     console.log(newUsage);
     console.log(newNoLicense);
+
+    console.log(newDepartment);
+    console.log(newCategory);
+    console.log(newDescription);
+    console.log(newSubRenewalDate);
   }
 
   async function CancelSubscription() {
@@ -181,9 +196,73 @@ function Dashboard() {
   }
 
 
+
+
+
+  async function FetchSubscriptions(){
+    try{
+      const { data } = await api.get('/dashboard/fetch_subscriptions', { params: { name: "Chat GPT", statusId: 2, procent: 50, below: false } });
+
+      setSubscriptions(data)
+
+      // console.log(data);
+
+    }catch(e: any) {
+      if(e?.response?.status === 401) return alert("Bad request!")
+    }
+  }
+
+  async function FetchCatergories() {
+    try {
+      const { data } = await api.get<OptionType[]>("/dashboard/get_categories")
+
+      setCategories([
+        { id: 0, name: "Please select a category" },
+        ...data
+      ])
+
+
+    } catch(e: any) {
+      if(e?.response?.status === 400) return alert("No categories found")
+    }
+  }
+
+  async function FetchDepartments() {
+    try {
+      const { data } = await api.get<OptionType[]>("/dashboard/get_departments")
+      
+      setDepartments([
+        { id: 0, name: "Please select a department" },
+        ...data
+      ])
+
+    } catch(e: any){
+      if(e?.response?.status === 400) return alert("No departments found")
+
+    }
+  }
+
+
+
+
   return (
     <div className='min-h-screen w-full flex flex-col bg-gray-600 text-white'>
-      <DashPopup toggle={popUp} onClick={e => setPopUp(false)} input1={input1} input2={input2} input3={input3} input4={input4} btnOnClick={AddNewPopup}/>
+      <DashPopup
+       toggle={popUp} 
+       onClick={e => setPopUp(false)} 
+       input1={input1} 
+       input2={input2} 
+       input3={input3} 
+       input4={input4} 
+       btnOnClick={AddNewPopup} 
+       input5={input5} 
+       input6={input6}
+       categorySelect = {selectCategory}
+       category={categories}
+       departmentSelect= {selectDepartment}
+       department={departments}
+       />
+
         <div className='p-6 text-2xl font-semibold flex justify-center'>
           <h1>Check subscriptions</h1>
         </div>
@@ -231,7 +310,7 @@ function Dashboard() {
                       <td>${(w.licensePrice * w.numberoflicenses * (100 - w.usagePercent))/100}</td>
                       <td>{w.status}</td>
                       <td className='w-32'> 
-                        <DashBtn name={"View details"} width={'w-24'} onClick={OpenAddSubPopup} position=''/>
+                        <DashBtn name={"View details"} width={'w-24'} onClick={() => SubscriptionPopup(w.id)} position=''/>
                         
                       </td>
                       <td className='w-32'>

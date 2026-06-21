@@ -51,18 +51,39 @@ export class DashboardService {
 
     const rows = await this.database.query(sql, params);
 
-    console.log(rows)
+    // console.log(rows)
 
-    console.log(sql)
-    console.log(params)
+    // console.log(sql)
+    // console.log(params)
 
 
-    console.log(typeof(statusId))
-    console.log(typeof(procent))
-    console.log(typeof(below))
-    console.log(procent)    
-    console.log(statusId)
-    console.log(below)
+    // console.log(typeof(statusId))
+    // console.log(typeof(procent))
+    // console.log(typeof(below))
+    // console.log(procent)    
+    // console.log(statusId)
+    // console.log(below)
+
+    return rows
+  }
+
+
+  async getCategories(){
+    const sql = "select id, name from categories"
+
+    const rows = await this.database.query(sql)
+
+    // console.log(rows)
+
+    return rows
+  }
+
+  async getDepartments() {
+    const sql = "select id, name from departments"
+
+    const rows = await this.database.query(sql)
+
+    // console.log(rows)
 
     return rows
   }
