@@ -29,12 +29,12 @@ type UsageType ={
 type Subscription = {
   name: string,
   licensePrice: string,
-  dueDate: string,
-  numberOfLicenses: string,
-  categoryId: string,
-  departmentId: string,
+  dueDate: number,
+  numberOfLicenses: number,
+  categoryId: number,
+  departmentId: number,
   description: string,
-  usagePercent: string
+  usagePercent: number
 }
 
 
@@ -43,7 +43,7 @@ function Dashboard() {
 
   const navigate = useNavigate();
 
-  const [popUp,setPopUp] = useState<boolean>(true);
+  const [popUp,setPopUp] = useState<boolean>(false);
 
   const [subName,setSubName] = useState("");
   const [subscriptions, setSubscriptions] = useState<SubscriptionType[]>([]);
@@ -124,22 +124,23 @@ function Dashboard() {
     FetchSubscriptions()
     FetchDepartments() 
     FetchCatergories()
+    FetchStatuses()
 
-    const statusTemp = [{
-      id: 0,
-      name: "Select a status"
-    },{
-      id: 1,
-      name: "IN USE"
-    },{
-      id:2,
-      name: "RENEWAL SOON"
-    }]
+    // const statusTemp = [{
+    //   id: 0,
+    //   name: "Select a status"
+    // },{
+    //   id: 1,
+    //   name: "IN USE"
+    // },{
+    //   id:2,
+    //   name: "RENEWAL SOON"
+    // }]
 
     const usageTemp = [{id: 0, name: "0%"},{id: 1, name: "10%"},{id: 2, name: "20%"},{id: 3, name: "30%"},{id: 4, name: "40%"},{id: 5, name: "50%"},{id: 6, name: "60%"},{id: 7, name: "70%"},{id: 8, name: "80%"},{id: 9, name: "90%"},{id: 10, name: "100%"},]
 
     setUsage(usageTemp)
-    setStatuses(statusTemp);
+    // setStatuses(statusTemp);
     // setSubscriptions(temp);
 
   }, [])
@@ -167,25 +168,25 @@ function Dashboard() {
     setNewCategory("")
     setNewDepartment("")
 
-    OpenAddSubPopup()
 
 
     try {
       const { data } = await api.get<Subscription>(`/dashboard/get_subscription/${id}`)
 
-      setNewSubName(data.name);
+      console.log(data)
+      setNewSubName(data.name ?? "");
       setNewLicensePrice(data.licensePrice)
-      setNewUsage(data.usagePercent)
-      setNewNoLicense(data.numberOfLicenses)
-      setNewSubRenewalDate(data.dueDate)
-      setNewDescription(data.description)
-      setNewCategory(data.categoryId)
-      setNewDepartment(data.departmentId)
+      setNewUsage(String(data.usagePercent))
+      setNewNoLicense(String(data.numberOfLicenses))
+      setNewSubRenewalDate(String(data.dueDate))
+      setNewDescription(data.description ?? "")
+      setNewCategory(String(data.categoryId))
+      setNewDepartment(String(data.departmentId))
+
+      OpenAddSubPopup()
 
     } catch(e: any) {
       if(e?.message?.status === 404) return alert("Subscription not found")
-    }finally{
-      setExistingId(0)
     }
     
 
@@ -203,11 +204,16 @@ function Dashboard() {
     console.log(newSubRenewalDate);
   }
 
-  async function CancelSubscription() {
+  async function CancelSubscription(id: number) {
     if(!confirm("Are you sure you want to cancel this subscription?")) {
       return;
     } 
     try {
+      const { data } = await api.put(`/dashboard/cancel_subscription/${id}`)
+
+      console.log(data)
+
+      FetchSubscriptions()
 
     } catch(e: any){
       if (e?.response?.status === 404) return alert("Subscription not found");
@@ -257,6 +263,21 @@ function Dashboard() {
 
     } catch(e: any){
       if(e?.response?.status === 400) return alert("No departments found")
+
+    }
+  }
+
+    async function FetchStatuses() {
+    try {
+      const { data } = await api.get<StatusType[]>("/dashboard/get_statuses")
+      
+      setStatuses([
+        { id: 0, name: "Please select a status" },
+        ...data
+      ])
+
+    } catch(e: any){
+      if(e?.response?.status === 400) return alert("No statuses found")
 
     }
   }
@@ -333,7 +354,7 @@ function Dashboard() {
                         
                       </td>
                       <td className='w-32'>
-                        <DashBtn name={"Cancel"} width={'w-24'} onClick={CancelSubscription} position=''/>
+                        <DashBtn name={"Cancel"} width={'w-24'} onClick={() => CancelSubscription(w.id)} position=''/>
                       </td>
                     </tr>
                   ))}

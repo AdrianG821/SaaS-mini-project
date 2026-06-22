@@ -1,5 +1,5 @@
 import { Injectable, OnModuleDestroy, OnModuleInit } from '@nestjs/common';
-import { createPool, Pool } from 'mysql2/promise';
+import { createPool, Pool, ResultSetHeader  } from 'mysql2/promise';
 
 @Injectable()
 export class DatabaseService implements OnModuleInit, OnModuleDestroy {
@@ -23,6 +23,11 @@ export class DatabaseService implements OnModuleInit, OnModuleDestroy {
   async query<T = any>(sql: string, params?: unknown[]): Promise<T[]> {
     const [rows] = await this.pool.query(sql, params);
     return rows as T[];
+  }
+
+  async execute(sql: string, params?: any[]): Promise<ResultSetHeader> {
+    const [result] = await this.pool.execute<ResultSetHeader>(sql, params);
+    return result;
   }
 
   async onModuleDestroy() {

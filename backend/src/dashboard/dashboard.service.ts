@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { BadRequestException, Injectable, NotFoundException } from '@nestjs/common';
 import { stringify } from 'querystring';
 import { DatabaseService } from 'src/database/database.service';
 
@@ -33,7 +33,7 @@ export class DashboardService {
     }
 
     
-    if(statusId)  {
+    if(statusId !== 0)  {
         sql += ` and sub.statusId = ? `
         params.push(statusId)
     }
@@ -50,19 +50,6 @@ export class DashboardService {
     }
 
     const rows = await this.database.query(sql, params);
-
-    // console.log(rows)
-
-    // console.log(sql)
-    // console.log(params)
-
-
-    // console.log(typeof(statusId))
-    // console.log(typeof(procent))
-    // console.log(typeof(below))
-    // console.log(procent)    
-    // console.log(statusId)
-    // console.log(below)
 
     return rows
   }
@@ -93,9 +80,48 @@ export class DashboardService {
     const sql = `select name, licensePrice , dueDate, numberOfLicenses, categoryId , departmentId , description, usagePercent from subscriptions where id = ${id}`
 
     const rows = await this.database.query(sql)
-    console.log(rows);
+    // console.log(rows);
 
     return rows;
   }
 
+  async getStatuses() {
+
+    const sql = `select id, name from statuses`
+
+    const rows = await this.database.query(sql)
+
+    return rows
+  }
+
+  async CancelSubscription(id: number) {
+    const params: any[] = [];
+    const updateParams: any[] = [];
+
+    let sql1 = `select id from subscriptions `
+
+    sql1 += `where id = ? `
+
+    if(isNaN(id)) throw new BadRequestException(`${id} is not a number`)
+
+    params.push(id)
+
+    const exists = await this.database.query(sql1, params)
+
+    if(exists.length === 0) throw new NotFoundException("Subscription not found")
+
+    let sql2 = `update subscriptions set statusId = (select id from statuses where name like '%cancel%') `
+
+    sql2 += ` where id = ? `;
+    
+    updateParams.push(id)
+
+    const affectedRows = await this.database.execute(sql2, updateParams)
+
+    // console.log(affectedRows)
+
+    if(affectedRows.affectedRows === 0) return "Cancel not succesfull, subscription missing"
+
+    return "OK"
+  }
 }

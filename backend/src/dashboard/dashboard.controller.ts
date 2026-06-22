@@ -1,4 +1,4 @@
-import { Controller, Get, Param, Query } from '@nestjs/common';
+import { Controller, Get, Param, Put, Query } from '@nestjs/common';
 import { DashboardService } from './dashboard.service';
 
 type SubscriptionsType = {
@@ -14,9 +14,9 @@ export class DashBoardController {
   constructor(private readonly dashboard: DashboardService) {}
 
   @Get('fetch_subscriptions')
-  getConnection(@Query() query: SubscriptionsType){
+  async getConnection(@Query() query: SubscriptionsType){
 
-    const data = this.dashboard.FetchSubscriptions(query);
+    const data = await this.dashboard.FetchSubscriptions(query);
 
     // console.log(query);
 
@@ -24,9 +24,9 @@ export class DashBoardController {
   }
 
   @Get('get_categories')
-  getCategories(){
+  async getCategories(){
 
-    const data = this.dashboard.getCategories();
+    const data = await this.dashboard.getCategories();
 
     // console.log(query);
 
@@ -34,9 +34,9 @@ export class DashBoardController {
   }
 
   @Get('get_departments')
-  getDepartments(){
+  async getDepartments(){
 
-    const data = this.dashboard.getDepartments();
+    const data = await this.dashboard.getDepartments();
 
     // console.log(query);
 
@@ -45,14 +45,33 @@ export class DashBoardController {
 
 
   @Get('get_subscription/:id')
-  getSubscription(@Param('id') id: number){
+  async getSubscription(@Param('id') id: number){
 
-    const data = this.dashboard.getSubscription(id);
+    const data = await this.dashboard.getSubscription(id);
 
-    console.log(id);
+    // console.log(id);
+
+    return  data[0];
+  }
+
+  @Get('get_statuses')
+  async getStatuses(){
+
+    const data = await this.dashboard.getStatuses();
+
+    // console.log(query);
 
     return  data;
   }
 
+  @Put('cancel_subscription/:id')
+  async CancelSubscription(@Param('id') id: number){
+
+    const data = await this.dashboard.CancelSubscription(id);
+
+    // console.log(query);
+
+    return  data;
+  }
 
 }

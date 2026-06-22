@@ -59,7 +59,7 @@ export default function DashPopup({toggle,onClick,input1,input2,input3,input4, b
                                 className="text-black rounded-lg px-1 py-1"
                                 type="number"
                                 max={31}
-                                value={input5.value}
+                                value={input5.value ?? ""}
                                 onChange={input5.onChange}
                                 />
                         </label>
@@ -69,7 +69,7 @@ export default function DashPopup({toggle,onClick,input1,input2,input3,input4, b
                         className=" w-full rounded-lg bg-slate-800 border border-slate-700 px-4 py-1"
                         placeholder={input1.placeholder}
                         type={input1.type}
-                        value={input1.value}
+                        value={input1.value ?? ""}
                         onChange={input1.onChange}/>
 
 
@@ -88,7 +88,7 @@ export default function DashPopup({toggle,onClick,input1,input2,input3,input4, b
                         className=" w-full rounded-lg bg-slate-800 border border-slate-700 px-4 py-1"
                         placeholder={input2.placeholder}
                         type={input2.type}
-                        value={input2.value}
+                        value={input2.value ?? ""}
                         onChange={input2.onChange}/>
 
 
@@ -96,7 +96,7 @@ export default function DashPopup({toggle,onClick,input1,input2,input3,input4, b
                         className=" w-full rounded-lg bg-slate-800 border border-slate-700 px-4 py-1"
                         placeholder={input3.placeholder}
                         type={input3.type}
-                        value={input3.value}
+                        value={input3.value ?? ""}
                         onChange={input3.onChange}/>
 
                         <select
@@ -113,13 +113,13 @@ export default function DashPopup({toggle,onClick,input1,input2,input3,input4, b
                         className=" w-full max-h-16 rounded-lg bg-slate-800 border border-slate-700 px-4 py-1"
                         placeholder={input4.placeholder}
                         type={input4.type}
-                        value={input4.value}
+                        value={input4.value ?? ""}
                         onChange={input4.onChange}/>
 
                         <textarea
                          className=" w-full max-h-64 rounded-lg bg-slate-800 border border-slate-700 px-4 py-1 max-h-52" 
                          placeholder={input6.placeholder}
-                         value = {input6.value}
+                         value = {input6.value ?? ""}
                          onChange={input6.onChange}
                          
                          />
