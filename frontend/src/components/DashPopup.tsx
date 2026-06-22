@@ -11,7 +11,8 @@ type DashPopupType = {
     categorySelect: SelectInput,
     category: OptionType[],
     departmentSelect: SelectInput,
-    department: OptionType[]
+    department: OptionType[],
+    disabled: boolean
 }
 
 export type InputType = {
@@ -37,7 +38,7 @@ export type OptionType = {
     name: string
 }
 
-export default function DashPopup({toggle,onClick,input1,input2,input3,input4, btnOnClick ,input5, input6 , categorySelect ,category , departmentSelect ,department }: DashPopupType) {
+export default function DashPopup({toggle,onClick,input1,input2,input3,input4, btnOnClick ,input5, input6 , categorySelect ,category , departmentSelect ,department , disabled = false}: DashPopupType) {
 
     
     return(
@@ -126,7 +127,7 @@ export default function DashPopup({toggle,onClick,input1,input2,input3,input4, b
 
 
 
-                       <button className="w-64 rounded-lg max-h-16 bg-blue-600 px-2 py-2 font-semibold hover:bg-blue-500" onClick={btnOnClick}>Save changes</button>
+                       <button disabled={disabled} className="w-64 rounded-lg max-h-16 bg-blue-600 px-2 py-2 font-semibold hover:bg-blue-500" onClick={btnOnClick}>Save changes</button>
                     </div>
 
                 </div>
