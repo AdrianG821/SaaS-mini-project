@@ -6,7 +6,13 @@ type DashPopupType = {
     input3: InputType,
     input4: InputType,
     btnOnClick: (event: React.MouseEvent<HTMLButtonElement>) => void,
-    // input5?: InputType,
+    input5: InputType,
+    input6: InputTextarea,
+    categorySelect: SelectInput,
+    category: OptionType[],
+    departmentSelect: SelectInput,
+    department: OptionType[],
+    disabled: boolean
 }
 
 export type InputType = {
@@ -16,7 +22,25 @@ export type InputType = {
     onChange: (event: React.ChangeEvent<HTMLInputElement>) => void,
 }
 
-export default function DashPopup({toggle,onClick,input1,input2,input3,input4 ,btnOnClick}: DashPopupType) {
+export type InputTextarea = {
+    placeholder: string,
+    value: string,
+    onChange: (event: React.ChangeEvent<HTMLTextAreaElement>) => void,
+}
+
+export type SelectInput = {
+    value: string,
+    onChange: (event: React.ChangeEvent<HTMLSelectElement>) => void,
+}
+
+export type OptionType = {
+    id: number,
+    name: string
+}
+
+export default function DashPopup({toggle,onClick,input1,input2,input3,input4, btnOnClick ,input5, input6 , categorySelect ,category , departmentSelect ,department , disabled = false}: DashPopupType) {
+
+    
     return(
         (toggle && 
             <div className="w-full flex min-h-screen absolute items-center justify-center backdrop-blur-sm" onClick={onClick}>
@@ -36,8 +60,8 @@ export default function DashPopup({toggle,onClick,input1,input2,input3,input4 ,b
                                 className="text-black rounded-lg px-1 py-1"
                                 type="number"
                                 max={31}
-                                // value={input5.value}
-                                // onChange={input5.onChange}
+                                value={input5.value ?? ""}
+                                onChange={input5.onChange}
                                 />
                         </label>
 
@@ -46,15 +70,18 @@ export default function DashPopup({toggle,onClick,input1,input2,input3,input4 ,b
                         className=" w-full rounded-lg bg-slate-800 border border-slate-700 px-4 py-1"
                         placeholder={input1.placeholder}
                         type={input1.type}
-                        value={input1.value}
+                        value={input1.value ?? ""}
                         onChange={input1.onChange}/>
 
 
                         <select
                             className=" w-full rounded-lg bg-slate-800 border border-slate-700 px-4 py-1"
+                            value={categorySelect.value}
+                            onChange={categorySelect.onChange}
                             >
-                                <option value={0}>Select category</option>
-                                <option value={1}>asdas</option>
+                                {category.map(w => (
+                                    <option key={w.id} value={w.id}>{w.name}</option>
+                                ))}
                         </select>
 
 
@@ -62,7 +89,7 @@ export default function DashPopup({toggle,onClick,input1,input2,input3,input4 ,b
                         className=" w-full rounded-lg bg-slate-800 border border-slate-700 px-4 py-1"
                         placeholder={input2.placeholder}
                         type={input2.type}
-                        value={input2.value}
+                        value={input2.value ?? ""}
                         onChange={input2.onChange}/>
 
 
@@ -70,32 +97,37 @@ export default function DashPopup({toggle,onClick,input1,input2,input3,input4 ,b
                         className=" w-full rounded-lg bg-slate-800 border border-slate-700 px-4 py-1"
                         placeholder={input3.placeholder}
                         type={input3.type}
-                        value={input3.value}
+                        value={input3.value ?? ""}
                         onChange={input3.onChange}/>
 
                         <select
                             className=" w-full rounded-lg bg-slate-800 border border-slate-700 px-4 py-1"
+                            value={departmentSelect.value}
+                            onChange={departmentSelect.onChange}
                             >
-                                <option value={0}>Select the departament</option>
-                                <option value={1}>asdas</option>
+                                {department.map(w => (
+                                    <option key={w.id} value={w.id}>{w.name}</option>
+                                ))}
                         </select>
 
                         <input                         
                         className=" w-full max-h-16 rounded-lg bg-slate-800 border border-slate-700 px-4 py-1"
                         placeholder={input4.placeholder}
                         type={input4.type}
-                        value={input4.value}
+                        value={input4.value ?? ""}
                         onChange={input4.onChange}/>
 
                         <textarea
                          className=" w-full max-h-64 rounded-lg bg-slate-800 border border-slate-700 px-4 py-1 max-h-52" 
-                         placeholder="Description"
+                         placeholder={input6.placeholder}
+                         value = {input6.value ?? ""}
+                         onChange={input6.onChange}
                          
                          />
 
 
 
-                       <button className="w-64 rounded-lg max-h-16 bg-blue-600 px-2 py-2 font-semibold hover:bg-blue-500" onClick={btnOnClick}>Add new subscription</button>
+                       <button disabled={disabled} className="w-64 rounded-lg max-h-16 bg-blue-600 px-2 py-2 font-semibold hover:bg-blue-500" onClick={btnOnClick}>Save changes</button>
                     </div>
 
                 </div>
