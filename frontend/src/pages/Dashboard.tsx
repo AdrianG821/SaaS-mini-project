@@ -215,7 +215,23 @@ function Dashboard() {
     try {
       const { data } = await api.put(`/dashboard/cancel_subscription/${id}`)
 
-      console.log(data)
+      // console.log(data)
+
+      FetchSubscriptions()
+
+    } catch(e: any){
+      if (e?.response?.status === 404) return alert("Subscription not found");
+    }
+  }
+
+  async function RenewSubscription(id: number) {
+    if(!confirm("Are you sure you want to renew this subscription?")) {
+      return;
+    } 
+    try {
+      const { data } = await api.put(`/dashboard/renew_subscription/${id}`)
+
+      // console.log(data)
 
       FetchSubscriptions()
 
@@ -373,7 +389,11 @@ function Dashboard() {
                         
                       </td>
                       <td className='w-32'>
-                        <DashBtn name={"Cancel"} width={'w-24'} onClick={() => CancelSubscription(w.id)} position=''/>
+                        {w.status === "Canceled" ?
+                          <DashBtn name={"RENEW"} width={'w-24'} onClick={() => CancelSubscription(w.id)} position=''/>
+                            : 
+                          <DashBtn name={"Cancel"} width={'w-24'} onClick={() => CancelSubscription(w.id)} position=''/>
+                        }
                       </td>
                     </tr>
                   ))}

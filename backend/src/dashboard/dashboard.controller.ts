@@ -74,4 +74,14 @@ export class DashBoardController {
     return  data;
   }
 
+  @Put('renew_subscription/:id')
+  async RenewSubscription(@Param('id') id: number){
+
+    const data = await this.dashboard.CancelSubscription(id);
+
+    // console.log(query);
+
+    return  data;
+  }
+
 }

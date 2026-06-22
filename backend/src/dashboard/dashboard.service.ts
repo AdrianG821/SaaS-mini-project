@@ -9,6 +9,11 @@ type SubscriptionsType = {
   below?: string,
 }
 
+type StatusResponse = {
+  statusId: number,
+  name: string
+}
+
 @Injectable()
 export class DashboardService {
 
@@ -99,11 +104,10 @@ export class DashboardService {
 
   async CancelSubscription(id: number) {
     const params: any[] = [];
-    const updateParams: any[] = [];
 
-    let sql1 = `select id from subscriptions `
+    let sql1 = `select sub.statusId as statusId, s.name as name from subscriptions sub join statuses s on s.id = sub.statusId `
 
-    sql1 += `where id = ? `
+    sql1 += ` where sub.id = ? `
 
     if(isNaN(id)) throw new BadRequestException(`${id} is not a number`)
 
@@ -113,18 +117,37 @@ export class DashboardService {
 
     if(exists.length === 0) throw new NotFoundException("Subscription not found")
 
-    let sql2 = `update subscriptions set statusId = (select id from statuses where name like '%cancel%') `
+    if(exists[0].name === "Canceled") {
+      const updateParams: any[] = [];
+      let sql2 = `update subscriptions set statusId = (select id from statuses where name like '%RENEWAL SOON%') `
 
-    sql2 += ` where id = ? `;
-    
-    updateParams.push(id)
+      sql2 += ` where id = ? `;
+      
+      updateParams.push(id)
 
-    const affectedRows = await this.database.execute(sql2, updateParams)
+      const affectedRows = await this.database.execute(sql2, updateParams)
 
-    // console.log(affectedRows)
+      // console.log(affectedRows)
 
-    if(affectedRows.affectedRows === 0) return "Cancel not succesfull, subscription missing"
+      if(affectedRows.affectedRows === 0) return "Renewal not succesfull, subscription missing"
 
-    return "OK"
+      return "OK"
+    } else {
+      const updateParams: any[] = [];
+      let sql2 = `update subscriptions set statusId = (select id from statuses where name like '%cancel%') `
+
+      sql2 += ` where id = ? `;
+      
+      updateParams.push(id)
+
+      const affectedRows = await this.database.execute(sql2, updateParams)
+
+      // console.log(affectedRows)
+
+      if(affectedRows.affectedRows === 0) return "Cancel not succesfull, subscription missing"
+
+      return "OK"
+    }
+
   }
 }
