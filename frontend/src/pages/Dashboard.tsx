@@ -46,10 +46,14 @@ function Dashboard() {
   const [popUp,setPopUp] = useState<boolean>(false);
 
   const [subName,setSubName] = useState("");
+  const [statusId, setStatusId] = useState(0);
+  const [procent, setProcent] = useState(0);
+  const [belowCheckBox,setBelowCheckBox] = useState<boolean>(false);
+
+
   const [subscriptions, setSubscriptions] = useState<SubscriptionType[]>([]);
   const [statuses, setStatuses] = useState<StatusType[]>([]);
   const [usage,setUsage] = useState<UsageType[]>([]);
-  const [belowCheckBox,setBelowCheckBox] = useState<boolean>(false);
 
 
   const [existingId,setExistingId] = useState(0);
@@ -146,7 +150,7 @@ function Dashboard() {
   }, [])
 
   function click() {
-    // console.log(belowCheckBox)
+    FetchSubscriptions()
   }
 
 
@@ -221,12 +225,27 @@ function Dashboard() {
   }
 
 
-
-
-
   async function FetchSubscriptions(){
+    const fname = subName;
+    const fstatusId = statusId;
+    const fprocent = procent;
+    const fbelow = belowCheckBox;
+
+    // console.log(fname)
+    // console.log(fstatusId)
+    // console.log(fprocent)
+    // console.log(fbelow)
+
+    const params = { 
+      name: fname, 
+      statusId: fstatusId, 
+      procent: fprocent, 
+      below: fbelow
+    }
     try{
-      const { data } = await api.get('/dashboard/fetch_subscriptions', { params: { name: "Chat GPT", statusId: 2, procent: 50, below: false } });
+      const { data } = await api.get('/dashboard/fetch_subscriptions', { params });
+
+      console.log(params)
 
       setSubscriptions(data)
 
@@ -311,8 +330,8 @@ function Dashboard() {
         <div className='flex items-center justify-center'>
           <div className='w-full justify-center flex gap-2'>
               <DashInput placeholder='Subscriptions name' value={subName} onChange={e => setSubName(e.target.value)} />
-              <DashSelect data={statuses}/>
-              <DashSelect data={usage} />
+              <DashSelect data={statuses} value={statusId} onChange={e => setStatusId(Number(e.target.value))}/>
+              <DashSelect data={usage} value={procent} onChange={e => setProcent(Number(e.target.value))}/>
               <DashCheckBox label={"Below"} value={belowCheckBox} onChange={e => setBelowCheckBox(Boolean(e.target.checked))}/>
               <DashBtn name={"Search"} width={'w-32'} onClick={click}/>
           </div>

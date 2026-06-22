@@ -16,9 +16,9 @@ export class DashboardService {
 
   async FetchSubscriptions(query: SubscriptionsType) {
 
-    const subName                 =   query.name;
+    const subName                 =   query.name ?? "";
     const statusId  : number      =   Number(query.statusId);
-    const procent   : number      =   Number(query.procent);
+    const procent   : number      =   Number(query.procent) * 10;
     const below                   =   query.below === 'true';
 
 
@@ -27,13 +27,15 @@ export class DashboardService {
 
     const params: any[] = [];
 
-    if(subName) {
+    const trimmedSubName = subName.trim();
+
+    if(trimmedSubName !== "") {
         sql += ` and sub.name like ? `
-        params.push(`%${subName}%`)
+        params.push(`%${trimmedSubName}%`)
     }
 
     
-    if(statusId !== 0)  {
+    if(statusId !== 0 && !Number.isNaN(statusId))  {
         sql += ` and sub.statusId = ? `
         params.push(statusId)
     }
@@ -50,6 +52,7 @@ export class DashboardService {
     }
 
     const rows = await this.database.query(sql, params);
+
 
     return rows
   }
