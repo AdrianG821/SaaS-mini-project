@@ -1,4 +1,4 @@
-import { Controller, Get, Param, Put, Query } from '@nestjs/common';
+import { Controller, Get, Param, Post, Put, Query , Body} from '@nestjs/common';
 import { DashboardService } from './dashboard.service';
 
 type SubscriptionsType = {
@@ -8,6 +8,18 @@ type SubscriptionsType = {
   below: string,
 }
 
+export type SubscriptionType = {
+  name: string,
+  dueDate: number,
+  categoryId: number,
+  licensePrice: number,
+  numberOfLicenses: number,
+  departmentId: number,
+  status: 1,
+  usagePercent: number,
+  description?: string,
+  userId: 1
+}
 
 @Controller('dashboard')
 export class DashBoardController {
@@ -70,6 +82,16 @@ export class DashBoardController {
     const data = await this.dashboard.CancelSubscription(id);
 
     // console.log(query);
+
+    return  data;
+  }
+
+  @Post('create_subscription')
+  async CreateSubscription(@Body() params: SubscriptionType){
+
+    const data = await this.dashboard.CreateSubscription(params);
+
+    console.log(data);
 
     return  data;
   }
