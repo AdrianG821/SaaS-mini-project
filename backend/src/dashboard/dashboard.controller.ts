@@ -18,7 +18,9 @@ export type SubscriptionType = {
   status: 1,
   usagePercent: number,
   description?: string,
-  userId: 1
+  userId: 1,
+  mode: string,
+  id: number
 }
 
 @Controller('dashboard')
@@ -89,11 +91,15 @@ export class DashBoardController {
   @Post('create_subscription')
   async CreateSubscription(@Body() params: SubscriptionType){
 
-    const data = await this.dashboard.CreateSubscription(params);
+    if(params.mode === "create"){
+      const data = await this.dashboard.CreateSubscription(params);
 
-    console.log(data);
+      return data
+    } else if(params.mode === "update"){
+      const data = await this.dashboard.CreateSubscription(params);
 
-    return  data;
+      return data
+    }
   }
 
 

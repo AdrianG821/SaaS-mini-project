@@ -163,24 +163,51 @@ export class DashboardService {
     const statusId          = sub.status
     const usagePercent      = sub.usagePercent
     const description       = sub.description
+    const userId            = sub.userId
 
-    let sql = "insert into subscriptions(name,dueDate,categoryId,licensePrice,numberOfLicenses,departmentId,statusId,usagePercent, description, userId) values (?,?,?,?,?,?,?,?,?,1)"
+    if(sub.mode === "create") {
+      let sql = "insert into subscriptions(name,dueDate,categoryId,licensePrice,numberOfLicenses,departmentId,statusId,usagePercent, description, userId) values (?,?,?,?,?,?,?,?,?,?)"
 
-    params.push(name)
-    params.push(dueDate)
-    params.push(categoryId)
-    params.push(licensePrice)
-    params.push(numberOfLicenses)
-    params.push(departmentId)
-    params.push(statusId)
-    params.push(usagePercent)
-    params.push(description)
+      params.push(name)
+      params.push(dueDate)
+      params.push(categoryId)
+      params.push(licensePrice)
+      params.push(numberOfLicenses)
+      params.push(departmentId)
+      params.push(statusId)
+      params.push(usagePercent)
+      params.push(description)
+      params.push(userId)
 
-    const affectedRows = await this.database.execute(sql, params)
+      const affectedRows = await this.database.execute(sql, params)
 
-    if(affectedRows.affectedRows === 0) throw new InternalServerErrorException("Subscription not created")
+      if(affectedRows.affectedRows === 0) throw new InternalServerErrorException("Subscription not created")
 
-    return "ok"
+      return "ok"
+    } else if(sub.mode === "update"){
+      let sql = "update subscriptions set name = ?,dueDate = ?,categoryId = ?,licensePrice = ?,numberOfLicenses = ?,departmentId = ?,statusId = ?,usagePercent = ?, description = ?, userId = ? where id = ?"
+      
+      params.push(name)
+      params.push(dueDate)
+      params.push(categoryId)
+      params.push(licensePrice)
+      params.push(numberOfLicenses)
+      params.push(departmentId)
+      params.push(statusId)
+      params.push(usagePercent)
+      params.push(description)
+      params.push(userId)
+      params.push(sub.id)
+
+      
+      const affectedRows = await this.database.execute(sql, params)
+
+      if(affectedRows.affectedRows === 0) throw new InternalServerErrorException("Subscription not updated")
+
+      return "ok"
+
+    }
+
   }
  
 }

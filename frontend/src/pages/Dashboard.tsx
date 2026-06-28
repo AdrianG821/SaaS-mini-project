@@ -226,15 +226,19 @@ function Dashboard() {
       usagePercent: usage,
       description: desc,
       userId: 1,
-      // mode: ""
+      mode: "",
+      id: 0
     }
 
     try {
       if(popupMode === "create") {
-        // params.mode = "create"
-        // console.log(params)
+        params.mode = "create"
+        console.log(params)
         const { data } = await api.post("/dashboard/create_subscription", params)
       } else if(popupMode === "update"){
+        params.id = existingId
+        params.mode = "update"
+        console.log(params)
         const { data } = await api.post("/dashboard/create_subscription", params)
       }
       
