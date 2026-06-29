@@ -3,10 +3,11 @@ import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { HealthModule } from './health/healts.module';
 import { DatabaseModule } from './database/database.module';
+import { AuthModule } from './auth/auth.module';
 import { DashboardModule } from './dashboard/dashboard.module';
 
 @Module({
-  imports: [HealthModule,DatabaseModule,DashboardModule],
+  imports: [HealthModule,DatabaseModule,DashboardModule,AuthModule],
   controllers: [AppController],
   providers: [AppService],
 })
