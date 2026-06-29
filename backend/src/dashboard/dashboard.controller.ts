@@ -1,5 +1,6 @@
-import { Controller, Get, Param, Put, Query } from '@nestjs/common';
+import { Controller, Get, Param, Post, Put, Query , Body, UseGuards} from '@nestjs/common';
 import { DashboardService } from './dashboard.service';
+import { JwtAuthGuard } from 'src/auth/jwt-auth.guard';
 
 type SubscriptionsType = {
   name: string,
@@ -8,11 +9,26 @@ type SubscriptionsType = {
   below: string,
 }
 
+export type SubscriptionType = {
+  name: string,
+  dueDate: number,
+  categoryId: number,
+  licensePrice: number,
+  numberOfLicenses: number,
+  departmentId: number,
+  status: 1,
+  usagePercent: number,
+  description?: string,
+  userId: 1,
+  mode: string,
+  id: number
+}
 
 @Controller('dashboard')
 export class DashBoardController {
   constructor(private readonly dashboard: DashboardService) {}
 
+  @UseGuards(JwtAuthGuard)
   @Get('fetch_subscriptions')
   async getConnection(@Query() query: SubscriptionsType){
 
@@ -23,6 +39,7 @@ export class DashBoardController {
     return  data;
   }
 
+  @UseGuards(JwtAuthGuard)
   @Get('get_categories')
   async getCategories(){
 
@@ -33,6 +50,7 @@ export class DashBoardController {
     return  data;
   }
 
+  @UseGuards(JwtAuthGuard)
   @Get('get_departments')
   async getDepartments(){
 
@@ -43,7 +61,7 @@ export class DashBoardController {
     return  data;
   }
 
-
+  @UseGuards(JwtAuthGuard)
   @Get('get_subscription/:id')
   async getSubscription(@Param('id') id: number){
 
@@ -54,6 +72,7 @@ export class DashBoardController {
     return  data[0];
   }
 
+  @UseGuards(JwtAuthGuard)
   @Get('get_statuses')
   async getStatuses(){
 
@@ -64,6 +83,7 @@ export class DashBoardController {
     return  data;
   }
 
+  @UseGuards(JwtAuthGuard)
   @Put('cancel_subscription/:id')
   async CancelSubscription(@Param('id') id: number){
 
@@ -72,6 +92,21 @@ export class DashBoardController {
     // console.log(query);
 
     return  data;
+  }
+
+  @UseGuards(JwtAuthGuard)
+  @Post('create_subscription')
+  async CreateSubscription(@Body() params: SubscriptionType){
+
+    if(params.mode === "create"){
+      const data = await this.dashboard.CreateSubscription(params);
+
+      return data
+    } else if(params.mode === "update"){
+      const data = await this.dashboard.CreateSubscription(params);
+
+      return data
+    }
   }
 
 

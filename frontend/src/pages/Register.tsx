@@ -12,9 +12,32 @@ function Register() {
   const [submitting, setSubmitting] = useState(false);
 
   async function registerAccount() {
-    console.log(username)
-    console.log(password)
-    console.log(role)
+
+    if(username === '' || username.trim().length < 5) return alert("Please put a valid username")
+    if(password === '' || password.trim().length < 5) return alert("Please put a valid password")
+    if(role === 0) return alert("Please select a role")
+
+    setSubmitting(true);
+
+    const params = {
+      username: username.trim(),
+      password: password.trim(),
+      roleId: role
+    }
+
+    try {
+      const { data } = await api.post('/login/register_account', params)
+
+      console.log(data)
+
+      // navigate("/dashboard" , { replace: true })
+
+    } catch(e: any) {
+        confirm("Logging to your was unsuccessful");
+    } finally {
+        setSubmitting(false);
+    }
+
 
   }
 

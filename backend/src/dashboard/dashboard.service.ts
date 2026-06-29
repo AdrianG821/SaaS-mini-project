@@ -1,6 +1,7 @@
-import { BadRequestException, Injectable, NotFoundException } from '@nestjs/common';
+import { BadRequestException, Injectable, InternalServerErrorException, NotFoundException } from '@nestjs/common';
 import { stringify } from 'querystring';
 import { DatabaseService } from 'src/database/database.service';
+import { SubscriptionType } from './dashboard.controller';
 
 type SubscriptionsType = {
   name: string,
@@ -150,4 +151,63 @@ export class DashboardService {
     }
 
   }
+
+  async CreateSubscription(sub: SubscriptionType){
+    const params    : any[] = [];
+    const name              = sub.name
+    const dueDate           = sub.dueDate
+    const categoryId        = sub.categoryId
+    const licensePrice      = sub.licensePrice
+    const numberOfLicenses  = sub.numberOfLicenses
+    const departmentId      = sub.departmentId
+    const statusId          = sub.status
+    const usagePercent      = sub.usagePercent
+    const description       = sub.description
+    const userId            = sub.userId
+
+    if(sub.mode === "create") {
+      let sql = "insert into subscriptions(name,dueDate,categoryId,licensePrice,numberOfLicenses,departmentId,statusId,usagePercent, description, userId) values (?,?,?,?,?,?,?,?,?,?)"
+
+      params.push(name)
+      params.push(dueDate)
+      params.push(categoryId)
+      params.push(licensePrice)
+      params.push(numberOfLicenses)
+      params.push(departmentId)
+      params.push(statusId)
+      params.push(usagePercent)
+      params.push(description)
+      params.push(userId)
+
+      const affectedRows = await this.database.execute(sql, params)
+
+      if(affectedRows.affectedRows === 0) throw new InternalServerErrorException("Subscription not created")
+
+      return "ok"
+    } else if(sub.mode === "update"){
+      let sql = "update subscriptions set name = ?,dueDate = ?,categoryId = ?,licensePrice = ?,numberOfLicenses = ?,departmentId = ?,statusId = ?,usagePercent = ?, description = ?, userId = ? where id = ?"
+      
+      params.push(name)
+      params.push(dueDate)
+      params.push(categoryId)
+      params.push(licensePrice)
+      params.push(numberOfLicenses)
+      params.push(departmentId)
+      params.push(statusId)
+      params.push(usagePercent)
+      params.push(description)
+      params.push(userId)
+      params.push(sub.id)
+
+      
+      const affectedRows = await this.database.execute(sql, params)
+
+      if(affectedRows.affectedRows === 0) throw new InternalServerErrorException("Subscription not updated")
+
+      return "ok"
+
+    }
+
+  }
+ 
 }

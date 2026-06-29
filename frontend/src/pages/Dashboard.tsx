@@ -197,31 +197,23 @@ function Dashboard() {
 
   }
 
-  async function AddNewPopup() {
+  async function SubscriptionsSave() {
     setSubmitting(true)
     const name = newSubName
     if(name === "" || name.length <= 5) return alert("Please complete a valid name")
-    console.log(name);
     const price = newLicensePrice;
     if(isNaN(Number(price)) || price.trim() === "") return alert("Please put a valid price")
-    console.log(newLicensePrice);
     const usage = newUsage;
     if(isNaN(Number(usage)) || usage.trim() === "") return alert("Please put a valid usage")
-    console.log(newUsage);
     const noLicense = newNoLicense;
     if(isNaN(Number(noLicense)) || noLicense.trim() === "") return alert("Please put a valid number of licenses")
-    console.log(newNoLicense);
     const department = newDepartment;
     if(department === "0" || department === "") return alert("Please complete a department")
-    console.log(newDepartment);
     const category = newCategory;
     if(category === "0" || category === "") return alert("Please complete a category")
-    console.log(newCategory);
     const desc = newDescription;
-    console.log(newDescription);
     const due = newSubRenewalDate;
     if(Number(due) > 31 || due.trim() === "") return alert("Please put a valid due date(>31)")
-    console.log(newSubRenewalDate);
 
     const params = {
       name: name,
@@ -233,11 +225,26 @@ function Dashboard() {
       status: 1,
       usagePercent: usage,
       description: desc,
-      userId: 1
+      userId: 1,
+      mode: "",
+      id: 0
     }
 
     try {
-      const { data } = await api.post("/dashboard/create_subscription", params)
+      if(popupMode === "create") {
+        params.mode = "create"
+        console.log(params)
+        const { data } = await api.post("/dashboard/create_subscription", params)
+      } else if(popupMode === "update"){
+        params.id = existingId
+        params.mode = "update"
+        console.log(params)
+        const { data } = await api.post("/dashboard/create_subscription", params)
+      }
+      
+      setPopUp(false)
+      
+      FetchSubscriptions()
 
     } catch(e: any) {
       if(e?.response.status === 400) return alert("Subscription not created")
@@ -254,6 +261,7 @@ function Dashboard() {
     } 
     try {
       const { data } = await api.put(`/dashboard/cancel_subscription/${id}`)
+
 
       FetchSubscriptions()
 
@@ -350,7 +358,7 @@ function Dashboard() {
        input2={input2} 
        input3={input3} 
        input4={input4} 
-       btnOnClick={() => AddNewPopup()} 
+       btnOnClick={() => SubscriptionsSave()} 
        input5={input5} 
        input6={input6}
        categorySelect = {selectCategory}
@@ -420,9 +428,7 @@ function Dashboard() {
                     </tr>
                   ))}
                 </tbody>
-              </table>
-
-                  
+              </table>                  
           </div>
         </div>
     </div>
