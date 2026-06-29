@@ -13,13 +13,26 @@ export default function Login() {
 
 
   async function loginAccount() {
-    console.log(username);
-    console.log(password);
+    if(username === '' || username.trim().length < 5) return alert("Please put a valid username")
+    if(password === '' || password.trim().length < 5) return alert("Please put a valid password")
+
     setSubmitting(true);
 
-    try {
+    const params = {
+      username: username.trim(),
+      password: password.trim()
+    }
 
-        // navigate("/dashboard" , { replace: true })
+    try {
+      const { data } = await api.post('/login/login_account', params)
+
+      console.log(data)
+      
+      localStorage.setItem("token", data.token)
+
+
+      navigate("/dashboard" , { replace: true })
+
     } catch(e: any) {
         confirm("Logging to your was unsuccessful");
     } finally {

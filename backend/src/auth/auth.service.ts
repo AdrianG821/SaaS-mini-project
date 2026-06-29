@@ -3,12 +3,13 @@ import { stringify } from 'querystring';
 import { DatabaseService } from 'src/database/database.service';
 import { LoginParamsType, RegisterParamsType } from './auth.controller';
 import * as bcrypt from 'bcryptjs';
+import { JwtService } from '@nestjs/jwt';
 
 
 @Injectable()
 export class AuthService {
 
-  constructor(private readonly database: DatabaseService) {}
+  constructor(private readonly database: DatabaseService,private readonly jwt: JwtService) {}
 
   async LoginFunction(data: LoginParamsType) {
     const params: any[]   =   []
@@ -22,7 +23,7 @@ export class AuthService {
 
     if(params.length < 1) throw new UnauthorizedException("Password box is empty")
 
-    const sql = 'select username, password, roleId from users where username = ?'
+    const sql = 'select id,username, password, roleId from users where username = ?'
 
     const rows = await this.database.query(sql,params)
 
@@ -31,8 +32,14 @@ export class AuthService {
     const user = rows[0]
 
     if(await bcrypt.compare(password, user.password)) {
+      const token = await this.jwt.signAsync({
+        sub: user.id,
+        username: user.username,
+        roleId: user.roleId,
+      })
       return { 
         message: "login succesful",
+        token: token,
         user: {
           id: user.id,
           username: user.username,

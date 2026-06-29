@@ -6,6 +6,11 @@ export type LoginParamsType = {
   username: string,
   password: string
 }
+export type RegisterParamsType = {
+  username: string,
+  password: string,
+  roleId: number
+}
 
 @Controller('login')
 export class AuthController {
@@ -16,6 +21,18 @@ export class AuthController {
     const data = await this.auth.LoginFunction(params);
 
     console.log(data);
+
+    return data
+
+  }
+
+  @Post('register_account')
+  async RegisterFunction(@Body() params:RegisterParamsType) {
+    const data = await this.auth.RegisterFunction(params);
+
+    console.log(data);
+
+    return data
 
   }
 
