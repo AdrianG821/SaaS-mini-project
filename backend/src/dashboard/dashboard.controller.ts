@@ -1,5 +1,6 @@
-import { Controller, Get, Param, Post, Put, Query , Body} from '@nestjs/common';
+import { Controller, Get, Param, Post, Put, Query , Body, UseGuards} from '@nestjs/common';
 import { DashboardService } from './dashboard.service';
+import { JwtAuthGuard } from 'src/auth/jwt-auth.guard';
 
 type SubscriptionsType = {
   name: string,
@@ -27,6 +28,7 @@ export type SubscriptionType = {
 export class DashBoardController {
   constructor(private readonly dashboard: DashboardService) {}
 
+  @UseGuards(JwtAuthGuard)
   @Get('fetch_subscriptions')
   async getConnection(@Query() query: SubscriptionsType){
 
@@ -37,6 +39,7 @@ export class DashBoardController {
     return  data;
   }
 
+  @UseGuards(JwtAuthGuard)
   @Get('get_categories')
   async getCategories(){
 
@@ -47,6 +50,7 @@ export class DashBoardController {
     return  data;
   }
 
+  @UseGuards(JwtAuthGuard)
   @Get('get_departments')
   async getDepartments(){
 
@@ -57,7 +61,7 @@ export class DashBoardController {
     return  data;
   }
 
-
+  @UseGuards(JwtAuthGuard)
   @Get('get_subscription/:id')
   async getSubscription(@Param('id') id: number){
 
@@ -68,6 +72,7 @@ export class DashBoardController {
     return  data[0];
   }
 
+  @UseGuards(JwtAuthGuard)
   @Get('get_statuses')
   async getStatuses(){
 
@@ -78,6 +83,7 @@ export class DashBoardController {
     return  data;
   }
 
+  @UseGuards(JwtAuthGuard)
   @Put('cancel_subscription/:id')
   async CancelSubscription(@Param('id') id: number){
 
@@ -88,6 +94,7 @@ export class DashBoardController {
     return  data;
   }
 
+  @UseGuards(JwtAuthGuard)
   @Post('create_subscription')
   async CreateSubscription(@Body() params: SubscriptionType){
 
